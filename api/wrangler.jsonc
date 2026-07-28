@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sibling-rewards-api-dev",
+  "main": "app/main.py",
+  "compatibility_date": "2026-07-27",
+  "compatibility_flags": ["python_workers", "disable_python_external_sdk"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sibling-rewards-dev",
+      "database_id": "1315dd35-54dc-4778-9272-40501d12ea6d",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PHOTOS",
+      "bucket_name": "sibling-rewards-dev"
+    }
+  ],
+  "vars": {
+    "APP_ENV": "development",
+    "ALLOWED_ORIGIN": "*"
+  }
+}

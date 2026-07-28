@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Sibling Rewards",
+    "slug": "sibling-rewards",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "siblingrewards",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Sibling Rewards uses your photos as proof of completed activities.",
+          "cameraPermission": "Sibling Rewards uses your camera to photograph completed activities.",
+          "microphonePermission": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "android": {
+      "package": "com.siblingrewards.prototype"
+    }
+  }
+}
+

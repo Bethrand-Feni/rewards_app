@@ -1,0 +1,10 @@
+{
+  "name": "sibling-rewards",
+  "private": true,
+  "workspaces": ["mobile"],
+  "scripts": {
+    "mobile": "npm --workspace mobile run start",
+    "mobile:check": "npm --workspace mobile run check"
+  }
+}
+
