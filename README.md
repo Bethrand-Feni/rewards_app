@@ -1,47 +1,124 @@
 # Sibling Rewards
 
-An Android-first Expo prototype for a household rewards loop:
+Private MVP repository for an Android-first household rewards app.
 
-1. A parent creates child profiles and chores.
-2. A child signs in with a household code, username and PIN.
-3. The child submits photographic proof.
-4. The parent reviews the activity and awards points.
-5. The child requests rewards and points are deducted on approval.
+Parents create child profiles, chores, and rewards. Children submit photo proof
+of completed activities, earn points when a parent approves them, and request
+rewards using their balance.
 
-The repository contains:
+## Quick setup — use the shared development API
 
-- `mobile/` — Expo SDK 57, Expo Router, TypeScript and TanStack Query.
-- `api/` — FastAPI on Cloudflare Python Workers with D1 and R2.
-- `api/migrations/` — the complete D1 schema and integrity constraints.
+This is the recommended setup for day-to-day mobile development and
+end-to-end testing.
 
-## Prerequisites
+### Requirements
 
 - Node.js 22+
 - npm 10+
-- Python 3.13+
-- `uv` 0.8.10 or newer (required by the current `pywrangler`)
-- A Cloudflare account for remote D1/R2 deployment
-- Expo Go on an Android phone
+- Expo Go on an Android device or Android emulator
 
-## Mobile setup
+### Start the app
+
+From the repository root:
 
 ```bash
 npm install
 cp mobile/.env.example mobile/.env
 ```
 
-The development API is provisioned at
-`https://sibling-rewards-api-dev.chiboyfeni.workers.dev`, and `mobile/.env`
-already points Expo to its `/api/v1` routes. Start Expo with:
+Set `mobile/.env` to the shared development API:
+
+```env
+EXPO_PUBLIC_API_URL=<shared-development-api-url>/api/v1
+```
+
+Ask a project maintainer for the current URL. It is shared privately and is not
+committed to this repository.
+
+Start Expo:
 
 ```bash
 npm run mobile
 ```
 
-Scan the QR code using Expo Go. A real phone cannot use the default
-`127.0.0.1` API URL to reach a Worker running on the computer.
+Open the app with Expo Go or an Android emulator.
 
-## API setup
+The development API and its test data are shared with the project team. Do not
+use real names, email addresses, PINs, passwords, or sensitive photos in test
+accounts.
+
+Parent passwords must contain at least 10 characters. Child PINs must contain
+4–6 digits.
+
+### Android emulator networking
+
+An emulator can normally reach the shared HTTPS API directly. If the emulator
+cannot resolve internet hostnames, restart its network or cold boot the
+emulator before changing application code.
+
+When testing an API running on the same computer, use Android Debug Bridge
+port forwarding:
+
+```bash
+adb reverse tcp:8787 tcp:8787
+```
+
+The mobile app can then use `http://127.0.0.1:8787/api/v1`.
+
+## Core flow
+
+1. A parent creates a household and account.
+2. The parent creates child profiles, chores, and rewards.
+3. A child signs in with the household code, username, and PIN.
+4. The child selects a chore and submits photo proof.
+5. The parent reviews the submission and awards points.
+6. The child requests an affordable reward.
+7. The parent approves or rejects the reward request.
+8. Approved rewards deduct their point cost from the child’s balance.
+
+## Verification
+
+Run the mobile TypeScript check from the repository root:
+
+```bash
+npm run mobile:check
+```
+
+Run the API tests:
+
+```bash
+cd api
+uv run pytest
+uv run python -m py_compile app/*.py
+```
+
+### End-to-end acceptance path
+
+1. Create a parent account and household.
+2. Create a child profile, chore, and reward.
+3. Sign out and sign in as the child.
+4. Open the chore and submit it with a non-sensitive test photo.
+5. Sign in as the parent and approve the submission.
+6. Sign in as the child and confirm the awarded balance.
+7. Request a reward.
+8. Approve the request as the parent.
+9. Confirm the reward cost was deducted and both queues are empty.
+
+Photo proof is stored in the development R2 bucket. Test account and ledger
+data are stored in the development D1 database.
+
+## Optional — run the API locally
+
+Use this setup when changing the API or validating backend work before a
+deployment.
+
+### Requirements
+
+- Python 3.13+
+- `uv` 0.8.10+
+- Cloudflare account access for remote D1/R2 work
+
+From the repository root:
 
 ```bash
 cd api
@@ -49,54 +126,40 @@ uv sync
 cp .dev.vars.example .dev.vars
 ```
 
-Replace both example secrets in `.dev.vars` with independent random values.
+Replace the example values in `.dev.vars` with two independent, long, random
+secrets. Never commit `.dev.vars`.
 
-Create Cloudflare resources:
-
-```bash
-uv run pywrangler d1 create sibling-rewards-dev
-uv run pywrangler r2 bucket create sibling-rewards-dev
-```
-
-Copy the returned D1 ID into `api/wrangler.jsonc`, then apply the migration:
+Apply the D1 schema locally and start the Worker:
 
 ```bash
 uv run pywrangler d1 migrations apply sibling-rewards-dev --local
 uv run pywrangler dev
 ```
 
-For an Expo Go device, deploy the development Worker:
+Set the mobile environment while testing the local API:
 
-```bash
-uv run pywrangler d1 migrations apply sibling-rewards-dev --remote
-uv run pywrangler deploy
+```env
+EXPO_PUBLIC_API_URL=http://127.0.0.1:8787/api/v1
 ```
 
-Cloudflare Python Workers are currently beta. The code deliberately uses only
-FastAPI, the standard library and native Worker bindings to minimize package
+A physical phone cannot use `127.0.0.1` to reach your computer. Use the shared
+development API, or expose the local API through a secure development tunnel.
+
+Cloudflare Python Workers are currently beta. The API intentionally limits its
+dependencies and uses native D1 and R2 bindings to reduce runtime
 compatibility risk.
 
-## Verification
+## Repository structure
 
-```bash
-npm run mobile:check
-cd api
-uv run pytest
-uv run python -m py_compile app/*.py
-```
+- `mobile/` — Expo SDK 57, Expo Router, React Native, TypeScript, and TanStack
+  Query.
+- `api/` — FastAPI running on Cloudflare Python Workers.
+- `api/migrations/` — D1 schema, indexes, and integrity constraints.
+- `api/tests/` — backend tests.
 
-The end-to-end acceptance path is:
+## MVP boundaries
 
-1. Register the parent and household.
-2. Create a child profile, chore and reward.
-3. Log out and sign in as the child using the displayed household code.
-4. Submit the chore with a photo.
-5. Sign back in as the parent and approve it.
-6. Sign in as the child, confirm the ledger balance and request the reward.
-7. Approve the redemption as the parent and confirm the deduction.
-
-## Prototype boundaries
-
-This version intentionally excludes additional adult admins, child email
+The MVP intentionally excludes additional adult administrators, child email
 accounts, recurring schedules, reward inventory, push notifications, offline
-writes, password-recovery email, signed Android builds and store publishing.
+writes, password-recovery email, signed Android builds, and Play Store
+publishing.
