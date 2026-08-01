@@ -2,11 +2,14 @@ export type Role = "PARENT" | "CHILD";
 
 export type User = {
   user_id: string;
-  family_id: string;
-  role: Role;
+  email: string;
+  family_id: string | null;
+  role: Role | null;
   display_name: string;
-  family_name: string;
-  family_code: string;
+  family_name?: string;
+  family_code?: string;
+  timezone?: string;
+  deletion_scheduled_for?: string | null;
 };
 
 export type AuthResponse = {
@@ -19,8 +22,28 @@ export type AuthResponse = {
 export type Child = {
   id: string;
   display_name: string;
-  username: string;
+  claim_status: "WAITING" | "CLAIMED";
+  join_pin_expires_at?: string | null;
   is_active: number;
+  deletion_scheduled_for?: string | null;
+};
+
+export type HouseholdMember = {
+  id: string;
+  display_name: string;
+  role: Role;
+  joined_at: string;
+  account_type: "ACCOUNT" | "CHILD_PROFILE";
+  is_active: number;
+  deletion_scheduled_for?: string | null;
+};
+
+export type HouseholdInvite = {
+  family_name: string;
+  family_code: string;
+  join_pin: string;
+  role: Role;
+  expires_at: string;
 };
 
 export type Chore = {
@@ -32,6 +55,20 @@ export type Chore = {
   assigned_to_user_id: string | null;
   assigned_to_name?: string | null;
   state: "ACTIVE" | "LOCKED" | "COMPLETED" | "INACTIVE";
+  schedule_type: "NONE" | "DAILY" | "WEEKDAYS" | "WEEKENDS" | "WEEKLY" | "MONTHLY";
+  start_date: string | null;
+  due_local_time: string | null;
+  weekday_mask: number;
+  reminders_enabled: number;
+  occurrence_id?: string | null;
+  due_at?: string | null;
+  local_due_date?: string | null;
+  occurrence_status?: "OPEN" | "OVERDUE" | null;
+  next_due_at?: string | null;
+  next_occurrence_status?: "OPEN" | "OVERDUE" | null;
+  display_title?: string;
+  display_description?: string;
+  display_points?: number;
 };
 
 export type Submission = {
@@ -56,6 +93,7 @@ export type Reward = {
   description: string;
   point_cost: number;
   is_active: number;
+  has_image?: boolean;
 };
 
 export type Redemption = {
@@ -77,4 +115,3 @@ export type PointTransaction = {
   reason: string;
   created_at: string;
 };
-

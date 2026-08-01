@@ -11,6 +11,19 @@
       "expo-router",
       "expo-secure-store",
       [
+        "expo-notifications",
+        {
+          "defaultChannel": "household-updates",
+          "color": "#F7A261"
+        }
+      ],
+      [
+        "react-native-nitro-google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.configure-when-ios-is-added"
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "photosPermission": "Sibling Rewards uses your photos as proof of completed activities.",
@@ -23,8 +36,7 @@
       "typedRoutes": true
     },
     "android": {
-      "package": "com.siblingrewards.prototype"
+      "package": "com.chiboyfeni.siblingrewards"
     }
   }
 }
-

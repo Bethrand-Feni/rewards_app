@@ -18,8 +18,28 @@
       "bucket_name": "sibling-rewards-dev"
     }
   ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "HOUSEHOLD_REALTIME",
+        "class_name": "HouseholdRealtime"
+      }
+    ]
+  },
+  "exports": {
+    "HouseholdRealtime": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
+  },
   "vars": {
     "APP_ENV": "development",
-    "ALLOWED_ORIGIN": "*"
+    "ALLOWED_ORIGIN": "*",
+    "DELETION_PURGE_ENABLED": "false",
+    "GOOGLE_ANDROID_CLIENT_ID": "536752181631-4f75k5iabj95s3sv6h0p6gqg1tk2pm9a.apps.googleusercontent.com",
+    "GOOGLE_WEB_CLIENT_ID": "536752181631-qrmo9j5jg94fpldjc767ptv4u0t8rt4u.apps.googleusercontent.com"
+  },
+  "triggers": {
+    "crons": ["0 * * * *"]
   }
 }

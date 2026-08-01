@@ -12,6 +12,6 @@ export default function Index() {
       </Screen>
     );
   if (!user) return <Redirect href="/auth" />;
+  if (!user.family_id || !user.role) return <Redirect href="/onboarding" />;
   return <Redirect href={user.role === "PARENT" ? "/parent" : "/child"} />;
 }
-

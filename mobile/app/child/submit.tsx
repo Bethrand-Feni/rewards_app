@@ -11,7 +11,7 @@ import { Button, Card, ErrorText, Field, Header, Screen } from "@/components";
 import { colors, radius, spacing } from "@/theme";
 
 export default function Submit() {
-  const params = useLocalSearchParams<{ choreId?: string; title?: string; submissionId?: string }>();
+  const params = useLocalSearchParams<{ choreId?: string; occurrenceId?: string; title?: string; submissionId?: string }>();
   const { api } = useAuth();
   const queryClient = useQueryClient();
   const [title, setTitle] = useState(params.title ?? "");
@@ -56,6 +56,7 @@ export default function Submit() {
         form.append("submission_type", isChore ? "CHORE" : "OTHER_ACTIVITY");
         form.append("title", isChore ? params.title ?? title : title);
         if (params.choreId) form.append("chore_id", params.choreId);
+        if (params.occurrenceId) form.append("chore_occurrence_id", params.occurrenceId);
       }
       const path = isResubmission ? `/submissions/${params.submissionId}/resubmit` : "/submissions";
       return api(path, { method: "POST", body: form });
@@ -74,11 +75,18 @@ export default function Submit() {
         {!isChore && !isResubmission ? <Field label="Activity title" value={title} onChangeText={setTitle} placeholder="What did you help with?" /> : null}
         <Field label={isResubmission ? "What did you change?" : "Short note"} multiline value={description} onChangeText={setDescription} placeholder="Add useful context for the review." />
         <Text style={styles.label}>Proof photo</Text>
-        {image ? (
-          <Image source={{ uri: image.uri }} style={styles.preview} />
-        ) : (
-          <View style={styles.placeholder}><Ionicons name="camera-outline" size={38} color={colors.peach} /><Text style={styles.placeholderText}>One clear photo is required</Text></View>
-        )}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={image ? "Change proof photo" : "Choose a proof photo"}
+          onPress={() => pickImage(false)}
+          style={({ pressed }) => pressed && styles.pressed}
+        >
+          {image ? (
+            <Image source={{ uri: image.uri }} style={styles.preview} />
+          ) : (
+            <View style={styles.placeholder}><Ionicons name="images-outline" size={38} color={colors.peach} /><Text style={styles.placeholderText}>Tap to choose a photo</Text></View>
+          )}
+        </Pressable>
         <View style={styles.actions}>
           <Pressable onPress={() => pickImage(true)} style={styles.photoButton}><Ionicons name="camera" size={22} color={colors.cocoa} /><Text style={styles.photoText}>Take photo</Text></Pressable>
           <Pressable onPress={() => pickImage(false)} style={styles.photoButton}><Ionicons name="images" size={22} color={colors.cocoa} /><Text style={styles.photoText}>Choose photo</Text></Pressable>
@@ -100,4 +108,5 @@ const styles = StyleSheet.create({
   photoButton: { flex: 1, minHeight: 52, borderRadius: radius.sm, backgroundColor: colors.sun, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: spacing.sm },
   photoText: { color: colors.cocoa, fontWeight: "900" },
   help: { color: colors.muted, fontSize: 12, textAlign: "center" },
+  pressed: { opacity: 0.72 },
 });

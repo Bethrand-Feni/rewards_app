@@ -1,0 +1,102 @@
+SIBLING REWARDS — IMPORTANT TO-DO LIST
+======================================
+
+This is the lean, non-fluff version of the product backlog.
+
+
+S TIER — ESSENTIAL BEFORE PUBLIC USE
+------------------------------------
+
+[ ] Account recovery and password reset.
+
+[ ] Account, household, and child-data deletion.
+
+[ ] Photo privacy and retention controls.
+
+[ ] Production environment separated from development.
+
+[ ] Authentication, session security, and rate limiting.
+
+[ ] Error monitoring, backups, and recovery procedures.
+
+[ ] Automated parent-to-child end-to-end testing.
+
+[ ] Reliable photo uploads with retry and duplicate protection.
+
+[ ] Privacy policy and parental consent.
+
+
+A TIER — ESSENTIAL FOR A USEFUL FIRST RELEASE
+---------------------------------------------
+
+[ ] Push notifications.
+
+[ ] Editing children, chores, and rewards.
+
+[ ] Correcting accidental approvals and point awards.
+
+[ ] Reward fulfillment states.
+
+[ ] Household settings and code rotation.
+
+[ ] Additional parent or caregiver accounts.
+
+[ ] Recurring chores and due dates.
+
+[ ] Review and point audit history.
+
+[ ] Repeatable deployment and rollback.
+
+
+B TIER — IMPORTANT DAILY-USE IMPROVEMENTS
+-----------------------------------------
+
+[ ] Chore reminders and overdue indicators.
+
+[ ] Safe shared-device profile switching.
+
+[ ] Offline and poor-network recovery.
+
+[ ] Accessibility support.
+
+[ ] Activity filtering.
+
+[ ] Child-profile reactivation.
+
+[ ] Automatic cleanup of abandoned photos.
+
+
+C TIER — USEFUL AFTER LAUNCH
+----------------------------
+
+[ ] Household activity summaries.
+
+[ ] Reward availability limits.
+
+[ ] Data export.
+
+[ ] Localization.
+
+[ ] Tablet layouts.
+
+
+D TIER — DEFER
+--------------
+
+Nothing in D Tier is currently necessary.
+
+Defer:
+
+- Social features.
+- Public leaderboards.
+- AI-generated chore or reward suggestions.
+- Advanced gamification.
+- Smart-home integrations.
+- Reward marketplaces.
+- Wearable-device support.
+- School or classroom mode.
+- Desktop parent dashboard.
+- Subscription and monetization features.
+
+These features would currently distract from making the core family
+experience dependable.

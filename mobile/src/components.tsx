@@ -1,13 +1,15 @@
 import { Ionicons } from "@expo/vector-icons";
-import type { PropsWithChildren, ReactNode } from "react";
+import { useEffect, useRef, type PropsWithChildren, type ReactNode, type RefObject } from "react";
 import {
   ActivityIndicator,
+  Animated,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   type TextInputProps,
+  type TextStyle,
   View,
   type ViewStyle,
 } from "react-native";
@@ -18,13 +20,29 @@ import { colors, radius, spacing } from "./theme";
 export function Screen({
   children,
   scroll = true,
+  scrollEnabled = true,
   contentStyle,
-}: PropsWithChildren<{ scroll?: boolean; contentStyle?: ViewStyle }>) {
+  scrollRef,
+}: PropsWithChildren<{
+  scroll?: boolean;
+  scrollEnabled?: boolean;
+  contentStyle?: ViewStyle;
+  scrollRef?: RefObject<ScrollView | null>;
+}>) {
   const content = <View style={[styles.screenContent, contentStyle]}>{children}</View>;
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <Wave />
-      {scroll ? <ScrollView contentContainerStyle={styles.scroll}>{content}</ScrollView> : content}
+      {scroll ? (
+        <ScrollView
+          ref={scrollRef}
+          contentContainerStyle={styles.scroll}
+          overScrollMode="never"
+          scrollEnabled={scrollEnabled}
+        >
+          {content}
+        </ScrollView>
+      ) : content}
     </SafeAreaView>
   );
 }
@@ -104,6 +122,62 @@ export function Button({
   );
 }
 
+export function IconButton({
+  icon,
+  label,
+  onPress,
+  variant = "secondary",
+  loading,
+  disabled,
+  compact = false,
+  compactSize = "small",
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
+  variant?: "secondary" | "danger";
+  loading?: boolean;
+  disabled?: boolean;
+  compact?: boolean;
+  compactSize?: "small" | "medium";
+}) {
+  const color = variant === "danger" ? colors.danger : colors.cocoa;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      disabled={disabled || loading}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.iconButton,
+        !compact && variant === "danger" && styles.iconButtonDanger,
+        compact && styles.iconButtonCompact,
+        compact && compactSize === "medium" && styles.iconButtonCompactMedium,
+        (disabled || loading) && styles.buttonDisabled,
+        pressed && styles.pressed,
+      ]}
+    >
+      {loading ? <ActivityIndicator color={color} size="small" /> : <Ionicons name={icon} size={compact ? compactSize === "medium" ? 20 : 18 : 21} color={color} />}
+    </Pressable>
+  );
+}
+
+export function FeedbackBanner({
+  message,
+  tone = "success",
+}: {
+  message?: string | null;
+  tone?: "success" | "info";
+}) {
+  if (!message) return null;
+  return (
+    <View accessibilityLiveRegion="polite" style={[styles.feedback, tone === "info" && styles.feedbackInfo]}>
+      <Ionicons name={tone === "success" ? "checkmark-circle" : "sparkles"} size={20} color={colors.cocoa} />
+      <Text style={styles.feedbackText}>{message}</Text>
+    </View>
+  );
+}
+
 export function Field({ label, ...props }: TextInputProps & { label: string }) {
   return (
     <View style={styles.fieldWrap}>
@@ -153,6 +227,22 @@ export function Loading() {
   );
 }
 
+export function AnimatedNumber({ value, style }: { value: number; style?: TextStyle }) {
+  const scale = useRef(new Animated.Value(1)).current;
+  const previous = useRef(value);
+
+  useEffect(() => {
+    if (previous.current === value) return;
+    previous.current = value;
+    Animated.sequence([
+      Animated.spring(scale, { toValue: 1.16, useNativeDriver: true, speed: 24 }),
+      Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 18 }),
+    ]).start();
+  }, [scale, value]);
+
+  return <Animated.Text style={[style, { transform: [{ scale }] }]}>{value}</Animated.Text>;
+}
+
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.canvas },
   scroll: { flexGrow: 1 },
@@ -182,6 +272,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: spacing.sm,
   },
+  iconButton: { width: 44, height: 44, borderRadius: 14, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.sun, alignItems: "center", justifyContent: "center" },
+  iconButtonDanger: { backgroundColor: "#FBE9E5", borderColor: "#E9B7AE" },
+  iconButtonCompact: { width: 36, height: 36, borderWidth: 0, borderColor: "transparent", backgroundColor: "transparent", borderRadius: 10 },
+  iconButtonCompactMedium: { width: 40, height: 40 },
+  feedback: { minHeight: 48, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.peach, backgroundColor: "#FFF0DF", paddingHorizontal: spacing.md, paddingVertical: 11, flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  feedbackInfo: { backgroundColor: colors.sun, borderColor: "#E0B84E" },
+  feedbackText: { flex: 1, color: colors.cocoa, fontWeight: "800", lineHeight: 19 },
   button_primary: { backgroundColor: colors.peach },
   button_secondary: { backgroundColor: colors.cream, borderWidth: 1, borderColor: colors.peach },
   button_ghost: { backgroundColor: "transparent" },
@@ -222,4 +319,3 @@ const styles = StyleSheet.create({
   error: { color: colors.danger, fontWeight: "700" },
   loading: { flex: 1, minHeight: 220, alignItems: "center", justifyContent: "center" },
 });
-

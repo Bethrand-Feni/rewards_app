@@ -15,7 +15,8 @@ end-to-end testing.
 
 - Node.js 22+
 - npm 10+
-- Expo Go on an Android device or Android emulator
+- An Android device or Android emulator
+- An Expo development build (Google sign-in and remote push do not run in Expo Go)
 
 ### Start the app
 
@@ -30,25 +31,29 @@ Set `mobile/.env` to the shared development API:
 
 ```env
 EXPO_PUBLIC_API_URL=<shared-development-api-url>/api/v1
+EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID=<google-web-oauth-client-id>
 ```
 
 Ask a project maintainer for the current URL. It is shared privately and is not
 committed to this repository.
 
-Start Expo:
+Start Metro for an installed development build:
 
 ```bash
 npm run mobile
 ```
 
-Open the app with Expo Go or an Android emulator.
+Open the development build on the device or emulator. To build one locally,
+run `npm --workspace mobile run android:dev`. An EAS development APK can be
+built with `npm --workspace mobile run build:android:dev`.
 
 The development API and its test data are shared with the project team. Do not
 use real names, email addresses, PINs, passwords, or sensitive photos in test
 accounts.
 
-Parent passwords must contain at least 10 characters. Child PINs must contain
-4–6 digits.
+Passwords must contain at least 10 characters. Every person signs in with an
+email and password, or with Google. A child’s one-time join PIN contains six
+digits and expires after 24 hours.
 
 ### Android emulator networking
 
@@ -67,14 +72,19 @@ The mobile app can then use `http://127.0.0.1:8787/api/v1`.
 
 ## Core flow
 
-1. A parent creates a household and account.
-2. The parent creates child profiles, chores, and rewards.
-3. A child signs in with the household code, username, and PIN.
+1. A person creates an account with an email, password, and display name.
+2. A parent creates a household, then adds child profiles, chores, and rewards.
+3. A child creates or signs in to their own account, then connects it to the
+   child profile using the household code and one-time join PIN.
 4. The child selects a chore and submits photo proof.
 5. The parent reviews the submission and awards points.
 6. The child requests an affordable reward.
 7. The parent approves or rejects the reward request.
 8. Approved rewards deduct their point cost from the child’s balance.
+
+Chores can also be scheduled once, daily, or on selected weekdays. Scheduled
+chores show their due time and overdue status; the first child to submit an
+“Everyone” occurrence claims that occurrence.
 
 ## Verification
 
@@ -94,9 +104,11 @@ uv run python -m py_compile app/*.py
 
 ### End-to-end acceptance path
 
-1. Create a parent account and household.
-2. Create a child profile, chore, and reward.
-3. Sign out and sign in as the child.
+1. Create an account, then create a household.
+2. Create a child profile and record its one-time join PIN, then create a chore
+   and reward.
+3. Sign out, create the child’s email account, and connect it using the
+   household code and one-time join PIN.
 4. Open the chore and submit it with a non-sensitive test photo.
 5. Sign in as the parent and approve the submission.
 6. Sign in as the child and confirm the awarded balance.
@@ -157,9 +169,29 @@ compatibility risk.
 - `api/migrations/` — D1 schema, indexes, and integrity constraints.
 - `api/tests/` — backend tests.
 
-## MVP boundaries
+## External service setup
 
-The MVP intentionally excludes additional adult administrators, child email
-accounts, recurring schedules, reward inventory, push notifications, offline
-writes, password-recovery email, signed Android builds, and Play Store
-publishing.
+Google sign-in requires Android and Web OAuth clients in Google Cloud. The
+Android client must use package `com.chiboyfeni.siblingrewards` and the SHA-1
+of each development/production signing key. Put the Web client ID in
+`mobile/.env` and set the matching client ID as `GOOGLE_WEB_CLIENT_ID` on the
+Worker. Google sign-in auto-links a verified email to an existing account.
+
+Push notifications require an EAS project ID and Android FCM v1 credentials.
+After running `eas init`, keep the generated project ID in the Expo config and
+upload the FCM service account through EAS credentials. The Settings screen
+explains permission before Android displays its system prompt.
+
+The Worker cron runs every five minutes to materialize scheduled chores, mark
+overdue work, enqueue reminders, and retry notifications. Account and child
+deletions have a 30-day recovery window. Physical purge remains disabled in
+development until `DELETION_PURGE_ENABLED=true` is deliberately set after a
+backup/restore rehearsal.
+
+## Current boundaries
+
+The app still has one parent account per household and no password-recovery
+email provider. Google sign-in is the alternate access avenue for linked
+accounts. Additional adult administrators, reward inventory, offline writes,
+iOS release configuration, and Play Store publishing remain outside this
+phase.

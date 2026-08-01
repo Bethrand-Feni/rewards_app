@@ -17,15 +17,20 @@ export default function Chores() {
       {chores.isLoading ? <Loading /> : !chores.data?.length ? (
         <Empty title="Nothing waiting" message="Your parent hasn't added any available chores yet." />
       ) : chores.data.map((chore) => (
-        <Card key={chore.id}>
+        <Card key={chore.occurrence_id ?? chore.id}>
           <View style={styles.row}>
             <View style={styles.icon}><Ionicons name={chore.mode === "ONE_TIME" ? "flash-outline" : "repeat-outline"} size={23} color={colors.cocoa} /></View>
-            <View style={styles.grow}><Text style={styles.title}>{chore.title}</Text><Text style={styles.meta}>{chore.assigned_to_name ? `For ${chore.assigned_to_name}` : "Open to everyone"}</Text></View>
-            <Pill label={`${chore.suggested_points} pts`} tone="success" />
+            <View style={styles.grow}><Text style={styles.title}>{chore.display_title ?? chore.title}</Text><Text style={styles.meta}>{chore.assigned_to_name ? `For ${chore.assigned_to_name}` : "Open to everyone"}</Text></View>
+            <Pill label={`${chore.display_points ?? chore.suggested_points} pts`} tone="success" />
           </View>
-          <Text style={styles.description}>{chore.description || "Take a photo when you're finished."}</Text>
-          <Pill label={chore.mode} tone="info" />
-          <Button title="Submit this chore" onPress={() => router.push({ pathname: "/child/submit", params: { choreId: chore.id, title: chore.title } })} />
+          <Text style={styles.description}>{(chore.display_description ?? chore.description) || "Take a photo when you're finished."}</Text>
+          {chore.due_at ? (
+            <Pill
+              label={`${chore.occurrence_status === "OVERDUE" ? "OVERDUE" : "DUE"} · ${new Date(chore.due_at).toLocaleString()}`}
+              tone={chore.occurrence_status === "OVERDUE" ? "danger" : "info"}
+            />
+          ) : <Pill label={chore.mode} tone="info" />}
+          <Button title="Submit this chore" onPress={() => router.push({ pathname: "/child/submit", params: { choreId: chore.id, occurrenceId: chore.occurrence_id ?? undefined, title: chore.display_title ?? chore.title } })} />
         </Card>
       ))}
     </Screen>
@@ -40,4 +45,3 @@ const styles = StyleSheet.create({
   meta: { color: colors.muted, fontSize: 12, marginTop: 3 },
   description: { color: colors.cocoa, lineHeight: 20 },
 });
-

@@ -63,12 +63,16 @@ def decode_access_token(token: str, secret: str) -> dict:
 @dataclass(frozen=True)
 class Principal:
     user_id: str
-    family_id: str
-    role: str
+    family_id: str | None
+    role: str | None
     display_name: str
+    email: str
 
 
 def new_family_code() -> str:
     alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
     return "".join(secrets.choice(alphabet) for _ in range(6))
 
+
+def new_join_pin() -> str:
+    return f"{secrets.randbelow(1_000_000):06d}"

@@ -81,3 +81,12 @@ export function makeAuthenticatedApi(
 export function submissionImageUrl(id: string): string {
   return `${API_URL}/submissions/${id}/image`;
 }
+
+export function rewardImageUrl(id: string): string {
+  return `${API_URL}/rewards/${id}/image`;
+}
+
+export function realtimeUrl(ticket: string): string {
+  const websocketBase = API_URL.replace(/^http:/, "ws:").replace(/^https:/, "wss:");
+  return `${websocketBase}/realtime?ticket=${encodeURIComponent(ticket)}`;
+}

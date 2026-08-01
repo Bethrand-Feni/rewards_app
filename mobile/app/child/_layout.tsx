@@ -13,6 +13,7 @@ const icon = (name: keyof typeof Ionicons.glyphMap) =>
 export default function ChildLayout() {
   const { user } = useAuth();
   if (!user) return <Redirect href="/auth" />;
+  if (!user.family_id || !user.role) return <Redirect href="/onboarding" />;
   if (user.role !== "CHILD") return <Redirect href="/parent" />;
   return (
     <Tabs
@@ -26,9 +27,10 @@ export default function ChildLayout() {
     >
       <Tabs.Screen name="index" options={{ title: "Home", tabBarIcon: icon("home-outline") }} />
       <Tabs.Screen name="chores" options={{ title: "Chores", tabBarIcon: icon("checkbox-outline") }} />
-      <Tabs.Screen name="submit" options={{ title: "Submit", tabBarIcon: icon("camera-outline") }} />
       <Tabs.Screen name="rewards" options={{ title: "Rewards", tabBarIcon: icon("gift-outline") }} />
-      <Tabs.Screen name="activity" options={{ title: "Activity", tabBarIcon: icon("time-outline") }} />
+      <Tabs.Screen name="settings" options={{ title: "Settings", tabBarIcon: icon("settings-outline") }} />
+      <Tabs.Screen name="submit" options={{ href: null }} />
+      <Tabs.Screen name="activity" options={{ href: null }} />
     </Tabs>
   );
 }

@@ -1,0 +1,212 @@
+SIBLING REWARDS — EXPANSIVE TO-DO LIST
+======================================
+
+Purpose
+-------
+This is the broad product backlog, ranked from most important to least
+important. It intentionally includes launch requirements, quality-of-life
+improvements, and longer-term ideas.
+
+
+S TIER — REQUIRED BEFORE REAL FAMILIES USE IT
+----------------------------------------------
+
+[ ] Account recovery and password reset
+    Give parents a secure way to regain access without developer support.
+
+[ ] Account and household deletion
+    Allow a parent to permanently delete their account, household records,
+    child profiles, sessions, and associated photos.
+
+[ ] Child photo privacy, deletion, and retention rules
+    Define how long proof photos are stored, who can view them, and when they
+    are automatically or manually deleted.
+
+[ ] Automated parent-to-child end-to-end testing
+    Test the complete flow from chore creation through proof submission,
+    approval, point allocation, reward request, and reward approval.
+
+[ ] Production error monitoring and crash reporting
+    Capture mobile crashes, API errors, failed uploads, and real-time delivery
+    failures with enough context to diagnose them.
+
+[ ] Separate development and production environments
+    Keep test users and experimental changes away from real household data.
+
+[ ] Stronger authentication, rate limiting, and session security
+    Review password rules, child PIN protection, login throttling, token
+    rotation, session expiry, and authorization boundaries.
+
+[ ] D1 backup and recovery process
+    Document and test how household data can be restored after accidental
+    deletion, corruption, or a failed deployment.
+
+[ ] Privacy policy, terms, and parental consent
+    Explain what information is collected, how child data is handled, and what
+    parents are consenting to.
+
+[ ] Reliable photo-upload progress, retries, and failure recovery
+    Show upload state, handle interrupted connections, and let a child safely
+    retry without creating duplicate submissions.
+
+
+A TIER — IMPORTANT FOR A STRONG FIRST RELEASE
+----------------------------------------------
+
+[ ] Push notifications when the app is closed
+    Notify parents about new submissions and reward requests, and notify
+    children about reviews, feedback, and point changes.
+
+[ ] Editing child profiles, chores, and rewards
+    Expose the existing management capabilities through clear mobile editing
+    flows.
+
+[ ] Undoing accidental approvals and point awards
+    Provide a safe, audited correction path for parent mistakes.
+
+[ ] Reward fulfillment states
+    Track requested, approved, delivered, cancelled, or rejected rewards so an
+    approval is not confused with real-world delivery.
+
+[ ] Household settings
+    Let parents update the household name, rotate the family code, and manage
+    basic preferences.
+
+[ ] Additional parent or caregiver accounts
+    Allow more than one trusted adult to manage the same household.
+
+[ ] Recurring chores, schedules, and due dates
+    Support chores that repeat daily or weekly and show when work is due.
+
+[ ] Full submission and review history
+    Preserve the photo revision, parent decision, comments, awarded points,
+    and timestamps for each review cycle.
+
+[ ] Device and session management
+    Show signed-in devices and allow a parent to revoke sessions remotely.
+
+[ ] CI/CD with controlled deployment and rollback
+    Automatically run checks and make backend/mobile releases repeatable and
+    recoverable.
+
+
+B TIER — IMPROVES REGULAR HOUSEHOLD USE
+----------------------------------------
+
+[ ] Chore reminders and overdue indicators
+    Help children remember scheduled chores without requiring parents to
+    repeatedly remind them.
+
+[ ] Shared-device child switching
+    Make it safe and simple for siblings who use the same phone or tablet to
+    switch profiles.
+
+[ ] Chore rotation between siblings
+    Automatically alternate recurring responsibilities.
+
+[ ] Parent notification inbox
+    Provide an in-app place to see submissions, requests, review changes, and
+    other household events.
+
+[ ] Activity filtering and search
+    Filter the ledger and history by child, status, date, chore, or reward.
+
+[ ] Child-profile reactivation
+    Restore a previously deactivated profile without recreating its history.
+
+[ ] Better empty, loading, and error states
+    Make every screen explain what is happening and how the user can recover.
+
+[ ] Offline and poor-network support
+    Preserve in-progress work and recover gracefully when connectivity drops.
+
+[ ] Accessibility improvements
+    Verify screen-reader labels, text scaling, touch targets, contrast, and
+    keyboard behavior.
+
+[ ] R2 cleanup for abandoned and deleted photos
+    Remove orphaned uploads and enforce the chosen photo-retention policy.
+
+
+C TIER — VALUABLE AFTER THE CORE PRODUCT IS STABLE
+---------------------------------------------------
+
+[ ] Household activity summaries
+    Give parents a concise overview of completed chores, awarded points, and
+    redeemed rewards.
+
+[ ] Weekly progress reports
+    Summarize each child's activity over a weekly period.
+
+[ ] Streaks and achievement badges
+    Add optional motivation without changing the authoritative points ledger.
+
+[ ] Custom chore and reward categories
+    Let households organize their lists in a way that matches their routines.
+
+[ ] Reward availability or quantity limits
+    Prevent rewards from being requested when they are temporarily
+    unavailable or have reached a household-defined limit.
+
+[ ] Parent-configurable point presets
+    Speed up chore creation and submission review with reusable point values.
+
+[ ] Profile avatars and customization
+    Add visual identity for children and parents.
+
+[ ] Data export
+    Allow a parent to download household activity and account information.
+
+[ ] Localization and multiple languages
+    Prepare the app for households that do not use English.
+
+[ ] Tablet-specific layouts
+    Use larger screens more effectively instead of only stretching the phone
+    interface.
+
+
+D TIER — FUTURE EXPANSION
+--------------------------
+
+[ ] Social features between households
+    Add optional interaction beyond a single private household.
+
+[ ] Public leaderboards
+    Compare activity or points across users or households.
+
+[ ] AI-generated chores or rewards
+    Suggest household tasks or incentives based on parent input.
+
+[ ] Advanced gamification and character systems
+    Add deeper game mechanics beyond points, rewards, and simple achievements.
+
+[ ] Smart-home integrations
+    Connect chores or reminders to compatible household devices.
+
+[ ] School or classroom mode
+    Adapt the household model for teachers, students, and classrooms.
+
+[ ] Marketplace for purchasable rewards
+    Connect earned points or parent purchases to an external reward catalogue.
+
+[ ] Wearable-device support
+    Surface reminders or progress on watches and other wearable devices.
+
+[ ] Desktop parent dashboard
+    Provide a dedicated large-screen management experience.
+
+[ ] Subscription and monetization features
+    Add paid plans only after the core product is stable and demonstrably
+    useful.
+
+
+RECOMMENDED DELIVERY ORDER
+---------------------------
+
+1. Security and privacy
+2. Reliability and automated testing
+3. Account and household management
+4. Notifications
+5. Recurring chores
+6. Reward fulfillment
+7. Engagement and expansion features
